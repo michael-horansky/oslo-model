@@ -1,0 +1,181 @@
+% ProjectTemplate.tex LaTeX template for Complexity and Networks projects
+% T.S.Evans, K. Christensen Imperial College, London
+
+\documentclass[a4paper,12pt]{article}
+
+% These packages are standard and very useful for many mathematical symbols but you may well not need them
+%\usepackage{amsmath,amssymb,amscd}
+
+% *** FIGURES
+% Info on figures at http://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions
+%
+% --- graphicx
+\usepackage{graphicx}
+\usepackage{algorithmic}
+% This is the main one used to read in images.  ESSENTIAL
+%
+% I DO NOT recommend you try anything else.  Messing around with inages in LaTeX is a pain.
+% Try making an image or figure 5\% smaller in LaTeX can make all the difference
+
+
+
+% for sub figures
+\usepackage{caption}
+\usepackage{subcaption}
+
+
+
+% Change Page Size
+\usepackage[a4paper,margin=2cm, marginparwidth=2cm]{geometry}
+
+
+
+% *** HYPERLINKS
+%
+%\usepackage{hyperref}
+%
+% See http://en.wikibooks.org/wiki/LaTeX/Hyperlinks
+% or hyperref manual.  Main LaTeX reference systems automatically made into hyperlinks in pdf document.
+% Again this should always be the last package to be defined which may cause issues with showkeys.
+% An out-of-memory error might be caused by this package if its in the wrong position.
+% For additional hypelinks in the text try
+%   \hyperref[mainlemma]{lemma \ref*{mainlemma}}
+%   \url{<my_url>}
+%   \href{<my_url>}{<description>}
+% Now define replacements which will work even if hyperref not included
+\providecommand{\href}[2]{\texttt{#2}}
+\providecommand{\url}[1]{\texttt{#1}}
+
+
+% *** KEYS SHOWN IN DRAFTS
+%
+%\usepackage{showkeys}
+%
+% This is great for drafts as it will show all the labels you have defined.
+% DON'T forget to comment it out before submission
+% Always the last package to define.
+% An out-of-memory error might be caused by this package if its in the wrong position.
+
+
+% This will deal with the headers
+%\pagestyle{headings}
+%\markboth{CID \texttt{012345678} \hfill Project \hfill }{CID \texttt{012345678} \hfill Project \hfill }
+
+
+\begin{document}
+
+% Maybe it is just as easy to lay the title page out yourself.
+% The following lines are one way to do this.
+
+\begin{center}
+ {\Large\textbf{Networks Project}}  \\[3pt]
+ {\Large\textbf{A Growing Network Model}} \\[6pt]
+ {\large CID: \texttt{01881584}} \\[3pt]
+ 19th February 2023
+\end{center}
+
+% I prefer to lay out the first page myself
+%\maketitle
+
+
+\vspace*{2cm}
+\noindent
+{\bf Abstract:} You may want to write a concise abstract that briefly puts the
+work into context, explains what was done, how it was done, the main results,
+the conclusions you could draw and the implications hereof.
+
+\vspace*{2cm}
+\noindent
+{\bf Word count:}
+282 words in report (excluding front page, figure captions, table captions, acknowledgement and bibliography).
+
+
+\newpage
+
+
+\section{Implementation of the Oslo model.}
+
+\subsection{TASK 1}
+
+First, I created a class \textit{oslo\_lattice}, which implements the boundary-driven Oslo model. The algorithm itself is fairly simple, mirroring the steps outlined in the project notes. However, one non-trivial thing was the algorithm that deals specifically with relaxation, as it must ensure there are no supercritical sites before driving the system with another grain.
+
+The obvious, \textit{naive} algorithm, would be to keep iterating through all $L$ sites checking for supercriticality, and if a full iteration occurs without encountering a simple supercritical site, relaxation terminates. However, I have devised an optimized algorithm, which I named the \textit{ceilidh algorithm}, which works like this:
+
+\begin{algorithmic}
+
+\STATE $currentIndex\gets 0$
+\STATE $maxIndexAffected\gets 0$
+\WHILE{$currentIndex < L$ AND $currentIndex \leq maxIndexAffected$}
+	\IF {site at $currentIndex$ is supercritical}
+		\STATE relax current site
+		\STATE $currentIndex\gets currentIndex - 1$
+		\STATE $maxIndexAffected\gets \max(maxIndexAffected, currentIndex+1)$
+	\ELSE
+		\STATE $currentIndex\gets currentIndex + 1$
+	\ENDIF
+\ENDWHILE
+
+Instead of repeated full iteration, the algorithm keeps making single ``steps forward" and ``steps back", since the relaxation of a site at index $i$ can only cause supercriticalities on sites with indices ranging from $i-1$ to $i+1$, that is, on itself and its direct neighbours. The $maxIndexAffected$ variable applies the same principle to prevent the algorithm from needlessly iterating through the entire lattice when the last supercriticality gets resolved.
+
+\end{algorithmic}
+
+Tests:
+\begin{itemize}
+\item \textbf{Matching seed should yield deterministic behaviour.} I initialized several instances of the lattice with the same exact initial properties and hardcoded the seed for the random.py package to reset to a constant value before simulating every instance, and ran the simulation with 100 steps on all of them. I expected the states of all instances to be the same. This turned out to be true: all states across all instances were the same after the same amount of steps when resetting the seed each time.\\
+This assures that the stochastic behaviour of the programme is effected entiredly by the random.py package, usage of which can be easily monitored.
+
+\item \textbf{For any state, $z_i\leq z^{\mathrm{th}}_i$ always.} I created 10 instances with $L=100$ and simulated 10-100 steps on each. Then I checked whether $z_i\leq z^{\mathrm{th}}_i$ for all $i$ for their states. If this weren't true, it would mean there are supercritical sites not being relaxed before starting the next step.\\
+The test concluded well: there were no violations of this principle detected. This assures the relaxation algorithm used is valid.
+
+\item \textbf{The average pile heights match the values in the project notes.} After running the simulation on 10 instances and averaging the values after 500 and 5000 steps respectively, the average value of $h_1$ was found to be $26.7$ for $L=16$ and $53.5$ for $L=32$. These values match the ones given.
+
+\item \textbf{Performance of the relaxation algorithm used shouldn't be worse than the naive algorithm.} In fact, since each found supercriticality increases the number of sites to be checked by $L$ for the naive algorithm and by $2$ for the ceilidh algorithm, the time complexity of ceilidh should be less by one power of $L$ than that of the naive algorithm. Indeed, running a benchmark test confirms this: the ceilidh algorithm always outperforms the naive algorithm, and the ratio of runtimes increases as $L$ increases. TODO INSERT PLOT.
+\end{itemize}
+
+
+% Flushes all waiting graphics to appear now
+%\clearpage
+
+\subsection{References}
+
+References probably not really needed for a project but you might have to cite something.  Follow the standard advice on plagiarism.  For \LaTeX\ issues and bibliographies see this file \texttt{{\jobname}.tex} for comments on how (not) to do it. For instance, these two publications are great \cite{KN05,EL09}.
+
+% ********************************************************************
+\newpage
+\noindent
+\emph{NB: This page (acknowledgement and bibliography) does not count towards the 2500 word limit nor the 16 page limit.}
+\vspace*{2cm}
+
+\section*{Acknowledgements}
+
+Not required but you might want to thank A.Demonstrator for help.
+
+% *****************************************************************
+%
+% BIBLIOGRAPHY
+%
+% **************************************************************
+% 1) DO NOT WASTE TIME WITH BibTeX unless you REALLY KNOW WHAT YOU ARE DOING.
+%    Just write it by hand.
+% 2) NO bibliography is really needed for the projects
+%    but you might cite something you read or which provided an image.
+% 3) If we can get the item from the information you provided then it is fine.
+%    The exact format is not important, but a consistent format is important.
+%    Copy the style form one publication.
+%    If space not an issue, titles of papers are useful.
+
+\begin{thebibliography}{99}
+\bibitem{E14}
+  T.S.\ Evans, \emph{Slides for Networks course}, Physics Dept., Imperial College London, 2014, downloaded from Blackboard 2nd February 2015.
+\bibitem{KN05}
+  K.Christensen and N.Maloney,
+  \emph{Complexity and Criticality},
+  Imperial College Press, London, 2005.
+\bibitem{EL09}
+  T.S.\ Evans and R.\ Lambiotte,
+  ``Line Graphs, Link Partitions and Overlapping Communities'',
+  Phys.Rev.E.\ \textbf{80} (2009) 016202.
+\end{thebibliography}
+
+
+\end{document}
