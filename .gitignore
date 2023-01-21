@@ -1,5 +1,7 @@
 # ignore python cache files
 __pycache__/
+# ignore C/C++ cache files
+*.o
 # ignore the report templates
 report/ProjectTemplate2022/
 # we also ignore all latex byproduct files

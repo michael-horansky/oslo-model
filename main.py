@@ -2,55 +2,97 @@ from oslo_lattice_class import *
 
 import matplotlib.pyplot as plt
 
-def L_scaling_test(L_space, method, *args):
+def L_scaling_test(L_space, method, N_m=1, *args):
+    # L_space = array of L values to test on
+    # method = method of the oslo lattice class that returns a measurement value
+    # N_m = number of repetitions per L value datapoint
+    # *args = arguments to pass to oslo_lattice.method
     res_array = []
     print(f"--------- Commencing testing on {len(L_space)} instances --------")
     for L_val in L_space:
-        cur_lattice = oslo_lattice(L_val)
         print(f"Current L = {L_val}")
-        res = method(cur_lattice, *args)
-        print(f"  Result = {res}")
-        res_array.append(res)
+        cur_lattice = oslo_lattice(L_val)
+        cur_res_sum = method(cur_lattice, *args)
+        for i in range(N_m - 1):
+            cur_lattice = oslo_lattice(L_val)
+            cur_res_sum += method(cur_lattice, *args)
+        if N_m > 1:
+            cur_res_sum /= N_m
+        print(f"  Result = {cur_res_sum}")
+        res_array.append(cur_res_sum)
     return(res_array)
 
 
-"""
-ALGORITHM TIME BENCHMARK TEST
+# --------------------------------------------------------
+# ------------------- TASK functions ---------------------
+# --------------------------------------------------------
 
-import time
+# ----------- TASK 1 --------------
 
-naive_start = time.time()
-kim = oslo_lattice(400)
-kim.simulate(1e3, 'never', 'naive')
-print("Naive: --- %s seconds ---" % (time.time() - naive_start))
+def task1_matching_seed():
+    kim = oslo_lattice(10)
+    my_h, my_z_th = kim.h.copy(), kim.z_th.copy()
 
-ceilidh_start = time.time()
-kim = oslo_lattice(400)
-kim.simulate(1e3, 'never', 'ceilidh')
-print("Ceilidh: --- %s seconds ---" % (time.time() - ceilidh_start))"""
+    print(kim)
 
-"""
-kim = oslo_lattice(10)
+    random.seed(11)
+    kim.simulate(100, 'never')
+    print(kim)
+
+    for i in range(10):
+        random.seed(10)
+        cur_lat = oslo_lattice(10, 0.5, my_h, my_z_th)
+        cur_lat.simulate(100, 'never', 'naive')
+        print(cur_lat)
+
+def task1_benchmark_test():
+    import time
+
+    naive_start = time.time()
+    kim = oslo_lattice(400)
+    kim.simulate(1e3, 'never', 'naive')
+    print("Naive: --- %s seconds ---" % (time.time() - naive_start))
+
+    ceilidh_start = time.time()
+    kim = oslo_lattice(400)
+    kim.simulate(1e3, 'never', 'ceilidh')
+    print("Ceilidh: --- %s seconds ---" % (time.time() - ceilidh_start))
 
 
-my_h, my_z_th = kim.h.copy(), kim.z_th.copy()
+# ----------- TASK 2 --------------
 
-print(kim)
+def task2a():
+    L_space = [4 , 8  , 16 , 32  , 64 , 128, 256 , 512 ]
+    t_space = [50, 200, 600, 2500, 1e4, 4e4, 16e4, 64e4]
+    x_plotsize, y_plotsize = subplot_dimensions(len(L_space))
+    for n in range(len(L_space)):
+        plt.subplot(x_plotsize, y_plotsize, n+1)
+        print(f"Simulating lattice with L = {L_space[n]} until t = {int(t_space[n])}")
+        cur_lattice = oslo_lattice(L_space[n])
+        cur_evolution = cur_lattice.simulate(t_space[n])
+        plt.title(f"L = {L_space[n]}")
+        plt.ticklabel_format(style='sci', scilimits=(-3, 3))
+        plt.xlabel('t')
+        plt.ylabel('h')
+        plt.axhline(y=L_space[n], linestyle='dotted', color='red', label='bound.')
+        plt.axhline(y=2*L_space[n], linestyle='dotted', color='red')
+        plt.plot(cur_evolution, label='h(t;L)')
+        plt.legend()
+    plt.tight_layout()
+    plt.show()
 
-random.seed(11)
-kim.simulate(100, 'never')
-print(kim)
+def task2b():
 
-for i in range(1):
-    random.seed(10)
-    cur_lat = oslo_lattice(10, 0.5, my_h, my_z_th)
-    cur_lat.simulate(10, 'never', 'naive')
-    print(cur_lat)"""
+    L_space = [4 , 8  , 16 , 32  , 64 , 128]
+    res_space = L_scaling_test(L_space, oslo_lattice.get_t_c, 10)
+    plt.title("$\\langle t_c\\rangle(L)$ (10 measurements per datapoint)")
+    plt.xlabel('L')
+    plt.ylabel('$\\langle t_c\\rangle$')
+    plt.plot(L_space, res_space)
+    plt.show()
 
-L_space = np.linspace(10, 100, 10, dtype=int)
-res_space = L_scaling_test(L_space, oslo_lattice.average_t_c, 1e9, 10)
-plt.plot(L_space, res_space)
-plt.show()
+
+task2b()
 
 """
 kim = oslo_lattice(16)

@@ -10,6 +10,32 @@
 import numpy as np
 import random
 
+def subplot_dimensions(number_of_plots):
+    # 1x1, 2x1, 3x1, 2x2, 3x2, 4x2, 3x3, 4x3, 5x3
+    if number_of_plots == 1:
+        return(1, 1)
+    if number_of_plots == 2:
+        return(2, 1)
+    if number_of_plots == 3:
+        return(3, 1)
+    if number_of_plots == 4:
+        return(2, 2)
+    if number_of_plots <= 6:
+        return(3, 2)
+    if number_of_plots <= 8:
+        return(4, 2)
+    if number_of_plots <= 9:
+        return(3, 3)
+    if number_of_plots <= 12:
+        return(4, 3)
+    if number_of_plots <= 15:
+        return(5, 3)
+    return(np.ceil(np.sqrt(number_of_plots)), np.ceil(np.sqrt(number_of_plots)))
+
+
+
+
+
 
 class oslo_lattice():
     
@@ -114,6 +140,7 @@ class oslo_lattice():
         
     def relaxation_naive(self):
         s = 0
+        did_crossover_occur = False
         can_exit = False
         while(not can_exit):
             can_exit = True
@@ -126,11 +153,13 @@ class oslo_lattice():
                     self.h[i] -= 1
                     if i != self.L - 1:
                         self.h[i + 1] += 1
+                    else:
+                        did_crossover_occur = True
                     # Change the threshold slope of the relaxed site
                     self.z_th[i] = self.get_random_slope_threshold()
                     # you have to do the loop again after this one finishes
                     can_exit = False
-        return(s)
+        return(s, did_crossover_occur)
     
     def step(self, step_alg = 'ceilidh'):
         # Wrapper function for all the steps in one iteration of the algorithm
@@ -147,6 +176,7 @@ class oslo_lattice():
     def simulate(self, N_steps = 100, print_mode = 'never', step_alg = 'ceilidh', terminate_on_crossover = False):
         # The main loop for a basic simulation
         # updates the hiegh of the pile as an array
+        # returns the evolution array
         t = 0
         printed_last_it = False
         while(t < N_steps):
@@ -176,6 +206,7 @@ class oslo_lattice():
                     if print_mode in ['always', 'avalanche', 'events']:
                         print(f"Simulation terminated early on t = {t} due to cross-over occuring.")
                     break
+        return(self.evolution_array)
     
     def average_pile_height(self, N_steps = 100, N_repetitions = 10):
         sum_pile_height = 0
@@ -184,6 +215,16 @@ class oslo_lattice():
             self.simulate(N_steps, 'never')
             sum_pile_height += self.h[0]
         return(sum_pile_height / N_repetitions)
+    
+    def get_t_c(self):
+        self.reset()
+        t = 0
+        while(True):
+            cur_s, did_crossover_occur = self.step('ceilidh')
+            t += 1
+            if did_crossover_occur:
+                self.t_c = t
+                return(self.t_c)
     
     def average_t_c(self, N_steps = 100, N_repetitions = 10):
         sum_t_c = 0

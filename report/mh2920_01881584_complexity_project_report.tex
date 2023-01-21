@@ -134,6 +134,30 @@ The test concluded well: there were no violations of this principle detected. Th
 
 \section{The height of the pile $h(t; L)$}
 \subsection{TASK 2a}
+
+The set of all possible configurations is a subset of the set of \textbf{all} configurations for which
+$$0\leq z_i\leq z_i^{\mathrm{th}}, i=1, 2 \dots L$$
+The $z_i\leq z_i^{\mathrm{th}}$ conditions ensures a configuration doesn't include supercritical sites. The $0\leq z_i$ condition omits stable configurations that aren't reachable: as there is no way for a grain to be relaxed from a site with $z_i\leq 1$.
+
+Now: if a configuration cannot be reached through relaxation that includes grains leaving the system (and possibly some steps after that relaxation), it must be transient: as the number of grains in it is bigger than the number of grains in any configuration that could eventually lead to this configuration. This means that for a system with length $L$, all configurations with $z_L = 0$ are transient, as the first grain at site $L$ cannot be relaxed under any circumstance. Now that we have this, we can interpret the sites $i=1, 2\dots L-1$ as a system of length $L-1$ and apply the same argument to determine that all configurations with $z_{L-1} = 0$ are transient. By induction, we can show that any configuration for which there exists $j$ such that $z_j=0$ is transient, by investigating the sites $1, 2\dots j$ and noting that once adding grains will raise $h_j$ by $1$, the previous configurations will be unreachable.
+
+\textbf{Note:} of course, once that happens, a configuration with $z_j=0$ may be reached further on by relaxing a supercritical slope $z_{j-1}=2$, but that configuration cannot be any of the configurations reached earliler with $z_j=0$, as its value $h_j$ will be higher.
+
+From this we see that the recurrent configuration with the smallest height of the pile is the configuration for which
+$$h_i=L+1-i\hbox{ and therefore }z_i=1, i = 1, 2\dots, L$$
+We can see this is recurrent, as it is possible to have $z_i^\mathrm{th}=1, i=1, 2\dots L$, which means that driving this configuration will iterate back to itself.
+
+We can also see that the recurrent configuration with the largest height of the pile is equal to the possible configuration with the largest height of the pile, which is such that
+$$h_i=2(L+1)-2i\hbox{ and therefore }z_i=2, i = 1, 2\dots, L$$
+Indeed, having a larger pile would necessitate $\exists j:z_j>2$, which would render such configuration impossible.
+
+Finally: once the system reaches the set of recurrent configurations, its height will belong to the set of heights of recurrent configurations, whose minimum is $h_{inf}(L)=L$ and maximum is $h_{sup}(L)=2L$. Therefore, after reaching the recurrent configurations, we will have
+$$L\leq h(t; L) \leq 2L, \forall t > t_{recurrent}$$
+
+This is exactly what we observe on the following plots: the height of the pile increases from its initial value of $0$ until it reaches the recurrent region, in which it randomly oscillates between the lower and upper bound of $L$ and $2L$ respectively:
+
+INSERT PLOTS
+
 \subsection{TASK 2b}
 \subsection{TASK 2c}
 We have
