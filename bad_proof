@@ -1,0 +1,81 @@
+*
+x
+x
+xx
+xx
+xxxx
+
+x
+xx
+xx
+xx
+xxxx
+
+x
+x
+xx
+xxx
+xxxx
+
+
+xx
+xx
+xxx
+xxxx
+
+
+x
+xxx
+xxx
+xxxx
+
+
+
+\textbf{SILLY PROOF}
+
+Relaxation of a site at $j, j>1$ requires a relaxation to occur at $j-1$ in the same step (as that is the only way to disturb the site at $j$ by adding a single grain and raising $z_j$ by $1$). Therefore, a cross-over event requires every site from $i=1$ to $i=L$ to be relaxed at least once during that step.
+
+The smallest possible value of $z_i$ that puts site $i$ to supercriticality is $2$, since the smallest possible value of $z_i^\mathrm{th}$ is $1$. For a relaxation to occur at site $i$ \textbf{if} $z_i=0$, a relaxation must occur at site $i-1$ twice in a single step without a relaxation occuring at site $i$ in between, so that $z_i$ can rise to $2$. This can happen in two ways:
+\begin{enumerate}
+\item $z_{i-1}=1$ and a relaxation can occur at site $i-2$ twice without a relaxation 
+\end{enumerate}
+
+For relaxation to be possible to occur at $i$ in the next step, we require $z_i\geq 1$, otherwise adding a single grain from site $i-1$ will not put site $i$ into supercriticality.
+
+
+
+
+
+
+
+
+
+
+PROBABLY INCORRECT PROOF
+Suppose we have a recurrent configuration $A$ defined by heights $h_i$. For a possible configuration $B$ defined by heights $h_i'$, if $h_i'\geq h_i,i=1, 2\dots L$, then $B$ is a recurrent configuration, as it can be reached by driving the recurrent configuration $A$.
+
+
+
+
+
+
+\textbf{Sketch of a proof that $\langle t_c\rangle$ scales like $L^2$}
+
+To find $\langle t_c\rangle_L$ for a lattice $A$ of length $L$, we shall interpret the sites with $i=1, 2\dots L-1$ as a lattice $B$ of length $L-1$ with its own $\langle t_c\rangle_{L-1}$. For a cross-over event to occur in lattice $A$, a crossover must occur at least twice in lattice $B$ (possibly in a single step!) to set up supercriticality at site $L$, since it requires $z_L\geq 2$. On average, the first cross-over in lattice $B$ will occur after $\langle t_c\rangle_{L-1}$. Then, after the first cross-over occurs, $h_L=1$. Lattice $B$ needs to add one grain on average to every site, so that a configuration at which a second cross-over can occur will be prepared. Another way to look at this: as the first cross-over occurs, the "baseline", or the height of the background, that lattice $B$ sees, increases by $1$, so that the entire pile in $B$ must also by elevated by $1$, so that the second cross-over event has on average the same environment as the first one (although the specific shape of the pile before each of the two relaxations at site $L-1$ might be different). 
+
+This means that we need to add another $L-1$ grains to the system between the cross-over for $B$ and the cross-over for $A$ (although some of these might have been added even before the cross-over for $B$ happened, and were set up for an avalanche). This sets up a lower bound on $\langle t_c\rangle_L$. Similarly, if a cross-over event happens thrice in $B$, it \textit{must} occur in $A$, since $z_L=3$. From this one can see that
+$$\langle t_c\rangle_{L-1}+(L-1) \leq \langle t_c\rangle_L \leq \langle t_c\rangle_{L-1}+2(L-1)$$
+We know that $\langle t_c\rangle_{L=1}=2.5$ is a constant. By applying the lower and upper boundaries inductively, we see that
+$$\langle t_c\rangle_{L=1}+\sum_{n=1}^{L-1}n \leq \langle t_c\rangle_L \leq \langle t_c\rangle_{L=1}+2\sum_{n=1}^{L-1}n$$
+We know that $\sum_{n=1}^{L-1}n=L(L-1)/2$ scales like $L^2$. Since both the lower and the upper boundaries of $\langle t_c\rangle_L$ scale like $L^2$ for all values of $L$, $\langle t_c\rangle_L$ must also scale like $L^2$.
+
+\textbf{Note about the proof}: obviously, one can come up with a configuration at which we need to add less than $L-1$ or more than $2(L-1)$ grains to $B$ to cause a cross-over in $A$. However, the "rising baseline" argument is statistical, as it asks how the system needs to alter so that $B$ sees the same set of configurations that can precede cross-over both before the first and the second cross-over. Hence the inequality applies to $\langle t_c\rangle_{L}$, not $ {t_c}_{L}$
+
+boundaries by $z_{th}=[1, 1, 1\dots]$ and $z_{th}=[2, 2, 2\dots]$
+
+\textbf{CHURBELES PROOF}
+
+Relaxation of a site at $j, j>1$ must be preceded by a relaxation at site $j-1$ in the same step (as that is the only way to disturb the site at $j$ by adding a single grain and raising $z_j$ by $1$). Therefore, a cross-over event requires every site from $i=1$ to $i=L$ to be relaxed at least once during that step.
+
+Now: consider the configuration $A$ that is reached at the end of the step during which the first cross-over happened. In that step, a relaxation occured at site $L$, hence in $A$, $h_L$ is at least $1$ (if it was $0$, then that would mean that the last relaxation at site $L$ happened with $z_L=1$, which is never supercritical). Therefore, before the relaxation at site $L$ occured, $h_L\geq 1$. A relaxation had to occur at site $L-1$ when $h_L\geq 1$, therefore, after the relaxation at $L$, $h_L\geq$ BLABLABLA
+

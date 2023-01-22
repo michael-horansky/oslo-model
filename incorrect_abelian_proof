@@ -1,0 +1,32 @@
+*
+x
+x
+xx
+xxx
+
+
+x
+xx
+xx
+xxx
+
+
+x
+x
+xxx
+xxx
+
+
+
+xx
+xxx
+xxx
+
+Relaxation of a site at $j, j>1$ must be preceded by a relaxation at site $j-1$ in the same step (as that is the only way to disturb the site at $j$ by adding a single grain and raising $z_j$ by $1$). Therefore, a cross-over event requires every site from $i=1$ to $i=L$ to be relaxed at least once during that step.
+
+Since the system is Abelian, we can choose an ordering of relaxations which contains a series of relaxations at site $1$, then at site $2$, then at site $3\dots$ and finally at site $L$. In this sub-series, at the end, site $L$ is supercritical, hence $z_L\geq 2$. Right before, the top grain at site $L$ was the top grain at site $L-1$, therefore, for site $L-1$ to be supercritical, $z_{L-1}\geq 2$, and $z_L\geq 1$. Working inductively, we can show that at the beginning of this sub-series of relaxations, $z_i\geq 1, i=1, 2\dots L$.
+
+This means that the number of grains in the system when the cross-over occurs has a lower bound of $\sum_{i=1}^L L+1-i=L(L+1)/2$. Since for the possible configuration right before cross-over, we have $z_i\leq 2, i=1, 2\dots L$, the number of grains has an upper bound of $L(L+1)$. Since this is the first time cross-over occured, the number of grains in the system is equal to $t$, and
+$$L(L+1)/2\leq t_c\leq L(L+1)$$
+Since both the lower and the upper boundaries of $\langle t_c\rangle_L$ scale like $L^2$ for all values of $L$, $\langle t_c\rangle_L$ must also scale like $L^2$.
+

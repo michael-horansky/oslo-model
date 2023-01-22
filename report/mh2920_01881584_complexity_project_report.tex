@@ -139,9 +139,7 @@ The set of all possible configurations is a subset of the set of \textbf{all} co
 $$0\leq z_i\leq z_i^{\mathrm{th}}, i=1, 2 \dots L$$
 The $z_i\leq z_i^{\mathrm{th}}$ conditions ensures a configuration doesn't include supercritical sites. The $0\leq z_i$ condition omits stable configurations that aren't reachable: as there is no way for a grain to be relaxed from a site with $z_i\leq 1$.
 
-Now: if a configuration cannot be reached through relaxation that includes grains leaving the system (and possibly some steps after that relaxation), it must be transient: as the number of grains in it is bigger than the number of grains in any configuration that could eventually lead to this configuration. This means that for a system with length $L$, all configurations with $z_L = 0$ are transient, as the first grain at site $L$ cannot be relaxed under any circumstance. Now that we have this, we can interpret the sites $i=1, 2\dots L-1$ as a system of length $L-1$ and apply the same argument to determine that all configurations with $z_{L-1} = 0$ are transient. By induction, we can show that any configuration for which there exists $j$ such that $z_j=0$ is transient, by investigating the sites $1, 2\dots j$ and noting that once adding grains will raise $h_j$ by $1$, the previous configurations will be unreachable.
-
-\textbf{Note:} of course, once that happens, a configuration with $z_j=0$ may be reached further on by relaxing a supercritical slope $z_{j-1}=2$, but that configuration cannot be any of the configurations reached earliler with $z_j=0$, as its value $h_j$ will be higher.
+Now: if a configuration cannot be reached through relaxation that includes grains leaving the system (and possibly some steps after that relaxation), it must be transient: as the number of grains in it is bigger than the number of grains in any configuration that could eventually lead to this configuration. This means that for a system with length $L$, all configurations with $h_L \leq 0$ are transient, as the first grain at site $L$ cannot be relaxed under any circumstance. Now that we have this, we can interpret the sites $i=1, 2\dots L-1$ as a system of length $L-1$ and apply the same argument to determine that all configurations with $h_{L-1} \leq 1$ are transient, since once $h_L$ becomes $1$ and $h_{L-1}$ climbs to $2$, the value fo $h_{L-1}$ cannot drop below $2$, since there isn't any state with $h_{L-1} = 2$ for which the site at $L-1$ is supercritical. By induction, we can show that any configuration for which there exists $j$ such that $h_j\leq L-i$ is transient.
 
 From this we see that the recurrent configuration with the smallest height of the pile is the configuration for which
 $$h_i=L+1-i\hbox{ and therefore }z_i=1, i = 1, 2\dots, L$$
@@ -164,8 +162,44 @@ We have
 $$L \leq \langle h\rangle \leq 2L$$
 in the steady state. Hence $\langle h\rangle$ scales with $L$
 
-boundaries by $z_{th}=[1, 1, 1\dots]$ and $z_{th}=[2, 2, 2\dots]$
+\textbf{Proof that $\langle t_c\rangle$ scales like $L^2$}
 
+Let's investigate the step in which the first cross-over occurs. This step describes adding one grain to the configuration $A$ that directly precedes the first cross-over event. Resolving this driving step by relaxing all supercritical sites in $A$ (which will include the cross-over) shall result in a configuration $B$. Since no grains have left from the system up until $A$ is reached, the number of grains in $A$ is equal to the simulation time: $N(A)=t$. Therefore $t_c=N(A)+1$.
+
+We shall have an ordered sequence of indices which describes the order in which relaxations of supercritical sites in $A$ were resolved - call it $R$. Relaxation of a site at $j, j>1$ must be preceded by a relaxation at site $j-1$ in the same step (as that is the only way to disturb the site at $j$ by adding a single grain and raising $z_j$ by $1$). Therefore, a cross-over event requires every site from $i=1$ to $i=L$ to be relaxed at least once during that step.
+
+Now: consider the sub-sequence $M$ in $R$, which contains the last occurence of every index from $1$ to $L$, e.g.:
+$$R=\mathbf{1}, 2, 3, \mathbf{2}, 3, 4, 5, \mathbf{4}, \mathbf{3}, \mathbf{5}, 6, 7\dots$$
+(The elements of $M$ in this example are \textbf{bold}). We see that $M$ contains each index from $1$ to $L$ exactly once, but they're not necessarily in incremental order.
+
+Now: if we switch up the order of relaxation on indices before the last occurence of the index $i$, then $h_i$ stays the same (by Abelianity). We know that in the normal order, site $i$ is supercritical at that point. Therefore, if we relax all the indices that are in $R$ before the last occurence of $i$, then $i$ will be supercritical.
+
+Now: if site $i$ is supercritical, then relaxing any site other than $i$ will not change the fact that site $i$ is supercritical (since $z_i$ would have to decrease). Therefore we can actually relax any amount of indices occurring in $R$ \textit{after} the last occurrence of $i$: as long as all indices before the last ocurrence of $i$ have been relaxed, the site at $i$ will be supercritical.
+
+Therefore, if we relax all the indices in $R$ that do \textbf{not} belong to $M$, we will be left with an altered configuration $A'$ such that if we start relaxing indices in $M$ in-order, the first non-relaxed index in $M$ will be always pointing at a supercritical site. This means that for any index $n$, we have four options:
+\begin{enumerate}
+\item If $n-1$ is before $n$ in $M$ and $n+1$ is after $n$ in $M$, then $z_n\geq 1$ in $A'$
+\item If both $n-1$ and $n+1$ are before $n$ in $M$, then $z_n\geq 0$ in $A'$, but $z_{n-1}\geq 1$ in $A'$, otherwise the site at $n-1$ couldn't be supercritical when $n-1$ is reached in $M$.
+\item If both $n-1$ and $n+1$ are after $n$ in $M$, then $z_n\geq 2$ in $A'$
+\item If $n-1$ is after $n$ in $M$ and $n+1$ is before $n$ in $M$, then $z_n\geq 1$ in $A'$
+\end{enumerate}
+
+From this we see that $z_n\geq 0, n=1, 2\dots L$ in $A'$. By investigating every option, we see that $z_{n-1}+z_n\geq 1$ for any two neighbouring sites. This means that the number of grains in $A'$ has a lower bound of
+\begin{eqnarray}
+N(A')&\geq & \sum_{i=1}^{L}1+\left \lfloor{\frac{L-i}{2}}\right\rfloor\\
+N(A')&\geq &\left(\left \lfloor{\frac{L}{2}}\right\rfloor +1\right)\frac{L}{2}
+\end{eqnarray}
+Since grain could only leave the site during the relaxation of $A$ (after the driving grain was inputted), we have $N(A')\leq N(A)+1$. Therefore
+
+\begin{eqnarray}
+N(A)&\geq &\left(\left \lfloor{\frac{L}{2}}\right\rfloor +1\right)\frac{L}{2}-1
+\end{eqnarray}
+
+Since $A$ has to be a possible configuration, it requires $z_i\leq 2, i=1, 2\dots L$, which puts an upper bound on $N(A)$:
+$$N(A)\leq L(L+1)$$
+Therefore $t_c$ is bounded like so:
+$$\left(\left \lfloor{\frac{L}{2}}\right\rfloor +1\right)\frac{L}{2}\leq t_c \leq L(L+1)+1$$
+Since both the lower and the upper bounds of $t_c$ scale like $L^2$ for all values of $L$, $t_c$ (and $\langle t_c\rangle$ as well) must also scale like $L^2$.
 
 % Flushes all waiting graphics to appear now
 %\clearpage

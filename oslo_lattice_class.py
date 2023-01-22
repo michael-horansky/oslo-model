@@ -179,6 +179,7 @@ class oslo_lattice():
         # returns the evolution array
         t = 0
         printed_last_it = False
+        trotel = []
         while(t < N_steps):
             # Check whether to print in anticipation of avalanche
             if print_mode == 'avalanche':
@@ -201,12 +202,14 @@ class oslo_lattice():
             
             if did_crossover_occur:
                 # save the crossover time
-                self.t_c = t
+                trotel.append(self.z_array())
+                if self.t_c == None:
+                    self.t_c = t
                 if terminate_on_crossover:
                     if print_mode in ['always', 'avalanche', 'events']:
                         print(f"Simulation terminated early on t = {t} due to cross-over occuring.")
                     break
-        return(self.evolution_array)
+        return(trotel, self.evolution_array)
     
     def average_pile_height(self, N_steps = 100, N_repetitions = 10):
         sum_pile_height = 0

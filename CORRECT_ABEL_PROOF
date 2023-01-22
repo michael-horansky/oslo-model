@@ -1,0 +1,78 @@
+*
+x
+xx
+xx
+xxx
+xxx
+xxxxx
+1221
+
+x*
+xx
+xx
+xxx
+xxx
+xxxxx
+1221
+
+x
+xx
+xx*
+xxx
+xxx
+xxxxx
+1121
+
+x
+xx
+xx
+xxx
+xxx*
+xxxxx
+1111
+
+x
+xx*
+xxx
+xxxx
+xxxxx
+1211
+
+x
+xx
+xxx*
+xxxx
+xxxxx
+1221
+
+x
+xx
+xxx
+xxxx*
+xxxxx
+1222
+
+IT DOESNT MAKE SENSE TO RE-ORDER RELAXATIONS
+what about:
+
+1 2 3 [2 3] 4...
+and we explain why [] doesnt matter
+
+ASSUME WE RELAX THE [ITEMS] EVEN THOUGH THEYRE NOT SUPERCRITICAL
+THE NUMBER OF GRAINS WONT CHANGE
+WE WILL NEED THE TRIANGLE TO HAVE SUPERCRITICALITY FOR THE MAIN SEQUENCE
+A SUPERCRITICALITY CANNOT OCCUR AT J AFTER A SINGLE RELAXATION AT J-1 IF Z_{j-1}=0
+if 3 isnt supercritical when the main sequence gets interrupted, 
+
+we need to show that if the normaol order is valid, the main sequence M must be supercritical after the premature relaxation of []
+
+up until the FIRST occurence of n; inductive proof
+
+1. the height h_n is independent on the order of relaxation of the indices up until the last occurence of n
+2. therefore, if we first relax all the off-main sites up until the last occurence of n and then the main sites, n will be supercitical
+3. the only relaxation that might make site n not supercritical is the relaxation at n
+4. therefore, even if we first relax all the sites except the last occurences, site n will be supercritical when we relax all the main sequence elements before it (this holds for all n)
+
+
+3 must be supercritical after the premature relaxation of [] for 4 to be supercritical if done properly, since the total configuration of heights is the same regardless of relaxation order QED
+

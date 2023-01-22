@@ -92,7 +92,13 @@ def task2b():
     plt.show()
 
 
-task2b()
+#task2b()
+
+
+# Proof check
+lulu = oslo_lattice(32)
+trotel, _ = lulu.simulate(1000)
+print(trotel)
 
 """
 kim = oslo_lattice(16)
